@@ -2,18 +2,26 @@ from tortoise import fields
 from tortoise.models import Model
 
 
-class SubscriptionLvl(Model):
-    """ """
+class Subscription(Model):
+    """
+    Represents a user's subscription to a service.
 
-    subscription_lvl_id = fields.UUIDField(pk=True)
-    description = fields.TextField()
+    Attributes:
+        id (UUIDField): Unique identifier of the subscription.
+        subscription_lvl (ForeignKeyField): Subscription level associated with the subscription.
+        user (ForeignKeyField): User who owns the subscription.
+        is_active (BooleanField): Indicates whether the subscription is active.
+        start_date (DatetimeField): Start date of the subscription, set automatically.
+        end_date (DatetimeField): End date of the subscription, optional.
+    """
+
+    id = fields.UUIDField(pk=True)
+
     is_active = fields.BooleanField()
-    price = fields.DecimalField(max_digits=10, decimal_places=2)
-    upload_size_limit = fields.IntField()
-    storage_limit = fields.IntField()
-    its = fields.DecimalField(max_digits=10, decimal_places=2)
-    api_key_limit = fields.IntField()
-    requests_hour = fields.IntField()
-    watermark = fields.BooleanField()
-    created_at = fields.DatetimeField(auto_now_add=True)
-    updated_at = fields.DatetimeField(auto_now=True)
+    start_date = fields.DatetimeField(auto_now_add=True)
+    end_date = fields.DatetimeField(null=True)
+
+    subscription_lvl = fields.ForeignKeyField(
+        "models.SubscriptionLvl", related_name="subscription"
+    )
+    user = fields.ForeignKeyField("models.User", related_name="subscription")
