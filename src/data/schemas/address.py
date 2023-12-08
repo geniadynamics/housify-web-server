@@ -5,7 +5,7 @@ from uuid import UUID as UUIDType
 
 class AddressSchema(BaseModel):
     """
-    A schema representing an address.
+    A schema representing an address (creation).
 
     Attributes:
         id (UUIDType): The unique identifier for the address.

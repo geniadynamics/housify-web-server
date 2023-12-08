@@ -19,7 +19,7 @@ class RefreshTokenSchema(BaseModel):
     user: UUIDType = Field(
         ..., description="The ID of the user to whom the token belongs."
     )
-    token: str = Field(
+    token: str | None = Field(
         description="The token string used for refreshing authentication."
     )
     expiration: datetime = Field(description="The datetime when the token expires.")

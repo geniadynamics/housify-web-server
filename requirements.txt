@@ -1,5 +1,0 @@
-fastapi
-uvicorn
-tortoise-orm[asyncpg]
-pyjwt
-sphinx

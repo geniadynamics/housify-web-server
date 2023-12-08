@@ -24,7 +24,7 @@ class SubscriptionLvl(Model):
     id = fields.UUIDField(pk=True)
 
     description = fields.CharField(max_length=255)
-    is_active = fields.BooleanField()
+    is_active = fields.BooleanField(default=True)
     price = fields.DecimalField(max_digits=10, decimal_places=2)
     upload_size_limit = fields.IntField()
     storage_limit = fields.IntField()
