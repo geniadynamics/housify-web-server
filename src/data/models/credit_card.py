@@ -12,7 +12,7 @@ class CreditCard(Model):
         number (CharField): Credit card number.
         expiry_date (DateField): Expiration date of the credit card.
         ccv (IntField): Card verification value/code.
-        type (CharField): Type of the credit card (e.g., Visa, MasterCard).
+        c_type (CharField): Type of the credit card (e.g., Visa, MasterCard).
     """
 
     id = fields.UUIDField(pk=True)
@@ -21,4 +21,4 @@ class CreditCard(Model):
     number = fields.CharField(max_length=16)
     expiry_date = fields.DateField()
     ccv = fields.IntField()
-    type = fields.CharField(max_length=12)
+    c_type = fields.CharField(max_length=12)
