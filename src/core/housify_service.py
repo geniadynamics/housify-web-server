@@ -4,7 +4,7 @@ from tortoise.contrib.fastapi import register_tortoise
 from data.schemas.subscription_lvl import SubscriptionLvlSchema
 from data.models.subscription_lvl import SubscriptionLvl
 
-from .orm_config import config_db
+from core.orm_config import config_db
 
 DATABASE_CONFIG = config_db()
 
