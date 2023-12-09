@@ -13,6 +13,7 @@ uvicorn = "^0.24.0.post1"
 tortoise-orm = {extras = ["asyncpg"], version = "^0.20.0"}
 PyJWT = {extras = ["crypto"], version = "^2.8.0"}
 python-dotenv = "^1.0.0"
+automium-web = "^0.1.1"
 
 [tool.poetry.dev-dependencies]
 
