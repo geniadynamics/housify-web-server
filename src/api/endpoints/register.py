@@ -20,7 +20,6 @@ async def register_user(user_data: UserSchema):
     if await User.filter(email=user_data.email).exists():
         raise HTTPException(status_code=400, detail="Email already registered")
 
-
     async with in_transaction():
         created_user = await User.create(
             email=user_data.email,
