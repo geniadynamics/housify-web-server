@@ -1,4 +1,9 @@
-fastapi~=0.104.1
-python-dotenv~=1.0.0
-pydantic~=2.5.1
-uvicorn~=0.24.0.post1
+fastapi
+aioredis
+uvicorn
+tortoise-orm[asyncpg]
+python-dotenv
+async-fastapi-jwt-auth[asymmetric]
+pydantic[email]
+redis
+fastapi-mail
