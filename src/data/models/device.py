@@ -6,7 +6,7 @@ from .device_login import DeviceLogin
 
 class Device(Model):
     """
-    Represents a device used by a user, potentially for authentication purposes.
+    Represents a device used by a user, for authentication purposes.
 
     Attributes:
         id (UUIDField): Unique identifier of the device.
