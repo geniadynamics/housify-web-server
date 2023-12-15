@@ -15,7 +15,6 @@ def config_db():
     DB_URL = (
         os.getenv("PROD_DB_URL") if ENV == "production" else os.getenv("DEV_DB_URL")
     )
-    print(DB_URL)
 
     return {
         "connections": {"default": DB_URL},
