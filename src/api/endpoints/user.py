@@ -1,4 +1,5 @@
 from data.schemas.user import UserRegisterSchema, UserSchema
+from data.models.user import User
 from fastapi import APIRouter, HTTPException, status
 from services.crud.user import create_user
 from data.models.user import User
