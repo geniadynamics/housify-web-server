@@ -28,5 +28,3 @@ async def create_default_subscription_lvl():
             subscription_lvl = SubscriptionLvl(description=description, **attributes)
             await subscription_lvl.save()
             print(f"Default {description} subscription level created")
-        else:
-            print(f"Default {description} subscription level already exists")

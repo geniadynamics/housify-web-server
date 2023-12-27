@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends, Header, Query
+from fastapi import APIRouter, HTTPException, Depends
 from async_fastapi_jwt_auth import AuthJWT
 from fastapi.security import HTTPBearer
 
@@ -6,17 +6,12 @@ from services.utils.hash import hash_combined_passwd
 from data.models import User
 from data.schemas import LoginSchema, TokenResponse
 
-from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
 from pathlib import Path
 import os
 
 from dotenv import load_dotenv
 
-from fastapi import FastAPI
-from starlette.responses import JSONResponse
-from fastapi_mail import FastMail, MessageSchema, ConnectionConfig, MessageType
-from pydantic import EmailStr, BaseModel
-from typing import List, Any, Dict
+from core.mail_service import send_email
 
 ui_auth_rule = HTTPBearer()
 router = APIRouter()
@@ -32,57 +27,40 @@ email_template_path = (
     else Path("templates/email")
 )
 
+responses = {
+    401: {
+        "description": "Unauthorized",
+        "content": {
+            "application/json": {"example": {"detail": "Bad email or password"}}
+        },
+    }
+}
 
-class EmailSchema(BaseModel):
-    email: List[EmailStr]
-    body: Dict[str, Any]
 
-
-conf = ConnectionConfig(
-    MAIL_USERNAME=os.getenv("MAIL_USERNAME", "default_username"),
-    MAIL_PASSWORD=os.getenv("MAIL_PASSWORD", "default_password"),
-    MAIL_FROM=os.getenv("MAIL_FROM", "default_email@example.com"),
-    MAIL_PORT=int(
-        os.getenv("MAIL_PORT", "587")
-    ),  # Convert to integer and provide a default
-    MAIL_SERVER=os.getenv("MAIL_SERVER", "default_smtp_server.com"),
-    MAIL_FROM_NAME=os.getenv("MAIL_FROM_NAME", "Default Name"),
-    MAIL_SSL_TLS=False,
-    MAIL_STARTTLS=True,
-    USE_CREDENTIALS=True,
-    TEMPLATE_FOLDER=email_template_path,
+@router.post(
+    "/login",
+    response_model=TokenResponse,
+    responses={401: responses[401]},
 )
-
-
-async def send_email(subject: str, email: List[EmailStr], body: Dict[str, Any]):
-    message = MessageSchema(
-        subject=subject,
-        recipients=email,
-        template_body=body,
-        subtype=MessageType.html,
-    )
-
-    fm = FastMail(conf)
-    await fm.send_message(message, template_name="email.html")
-
-
-@router.post("/login", response_model=TokenResponse)
 async def login(user: LoginSchema, Authorize: AuthJWT = Depends()):
-    db_user = await User.get(email=user.email)
+    try:
+        db_user = await User.get(email=user.email)
 
-    if not db_user or db_user.hashed_password != hash_combined_passwd(
-        user.hashed_password.decode(), db_user.id
-    ):
+        if not db_user or db_user.hashed_password != hash_combined_passwd(
+            user.hashed_password.decode(), db_user.id
+        ):
+            raise HTTPException(status_code=401, detail="Bad email or password")
+    except Exception as e:
+        print(e) # !TODO add log
         raise HTTPException(status_code=401, detail="Bad email or password")
 
     subject = "Login Sucessful Housify"
-    recipients = [user.email]  # The recipients list should contain email strings
+    recipients = [user.email]
     body_content = {
-        "title": "Login Successful",  # This will be used in <h1>{{ body.title }}</h1>
-        "name": f"{db_user.first_name} {db_user.last_name}",  # This will be used in <h3>{{ body.name }}!</h3>
+        "title": "Login Successful",
+        "name": f"{db_user.first_name} {db_user.last_name}",
     }
 
-    # Call send_email with the defined content
     await send_email(subject, recipients, body_content)
 
     return {
