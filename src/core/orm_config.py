@@ -1,15 +1,9 @@
-from dotenv import load_dotenv
 import os
-from pathlib import Path
-
-root_path = Path(__file__).parent.parent.parent
+from tortoise.contrib.fastapi import register_tortoise
 
 
 def config_db():
     """ """
-
-    env_path = root_path / "src" / ".env"
-    load_dotenv(env_path)
 
     ENV = os.getenv("ENV", "development")
     DB_URL = (
@@ -37,3 +31,12 @@ def config_db():
             },
         },
     }
+
+
+async def register_orm(app):
+    register_tortoise(
+        app,
+        config=config_db(),
+        generate_schemas=False,
+        add_exception_handlers=True,
+    )
