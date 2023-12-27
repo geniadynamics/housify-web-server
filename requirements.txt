@@ -7,3 +7,4 @@ async-fastapi-jwt-auth[asymmetric]
 pydantic[email]
 redis
 fastapi-mail
+zeep
