@@ -15,6 +15,8 @@ from redis.asyncio import Redis
 from services.auth import jwt
 from pathlib import Path
 
+from zeep import Client
+
 import os
 
 app = FastAPI()
@@ -36,20 +38,6 @@ email_template_path = (
     Path(root_dir) / "templates/email"
     if root_dir is not None
     else Path("templates/email")
-)
-
-
-conf = ConnectionConfig(
-    MAIL_USERNAME=os.getenv("MAIL_USERNAME"),
-    MAIL_PASSWORD=os.getenv("MAIL_PASSWORD"),
-    MAIL_FROM=os.getenv("MAIL_FROM"),
-    MAIL_PORT=os.getenv("MAIL_PORT"),
-    MAIL_SERVER=os.getenv("MAIL_SERVER"),
-    MAIL_FROM_NAME=os.getenv("MAIL_FROM_NAME"),
-    MAIL_SSL_TLS=True,
-    MAIL_STARTTLS=True,
-    USE_CREDENTIALS=True,
-    TEMPLATE_FOLDER=email_template_path,
 )
 
 
@@ -75,6 +63,26 @@ register_tortoise(
 @app.exception_handler(AuthJWTException)
 def authjwt_exception_handler(request: Request, exc: AuthJWTException):
     return JSONResponse(status_code=exc.status_code, content={"detail": exc.message})
+
+soap_client = Client("http://localhost:5000/CryptoRateService.svc?wsdl")
+
+
+@app.get("/soap/crypto-rate/{symbol}")
+async def get_crypto_rate(symbol: str):
+    """
+    Uses SOAP to get the cryptocurrency rate for a specified symbol
+    """
+    response = soap_client.service.GetCryptoRate(symbol)
+    return {"symbol": response.Symbol, "price": response.Price}
+
+
+@app.get("/soap/all-crypto-rates")
+async def get_all_crypto_rates():
+    """
+    Uses SOAP to get all cryptocurrency rates stored in the database.
+    """
+    responses = soap_client.service.GetAllCryptoRates()
+    return [{"symbol": rate.Symbol, "price": rate.Price} for rate in responses]
 
 
 # def custom_openapi():
