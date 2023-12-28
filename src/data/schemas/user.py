@@ -10,17 +10,7 @@ class UserRegisterSchema(BaseModel):
     """
     Schema for user serialization and deserialization, used for user registration.
 
-    Attributes:
-        email (EmailStr): The email address of the user, validated for standard format.
-        first_name (str): The first name of the user.
-        last_name (str): The last name of the user.
-        hashed_password (bytes): The hashed password, securely stored, must be 64 bytes.
-        gender (int): The gender, represented as an integer. Valid values: 0, 1, 3.
-        phone (Optional[str]): The contact phone number, optional field, validated for format.
-        birth_date (date): The birth date of the user, validated to ensure 16+ years.
-        subscription_lvl (UUID): Current subscription level, default is Free.
-
-    Methods:
+    Validators:
         validate_gender(cls, v): Checks gender is a valid integer value.
         validate_hashed_password(cls, v): Ensures hashed password is 64 bytes.
         validate_birth_date(cls, v): Ensures user is at least 16 years old.
@@ -91,17 +81,7 @@ class UserSchema(BaseModel):
     """
     Schema for user serialization and deserialization, used for user registration.
 
-    Attributes:
-        email (EmailStr): The email address of the user, validated for standard format.
-        first_name (str): The first name of the user.
-        last_name (str): The last name of the user.
-        hashed_password (bytes): The hashed password, securely stored, must be 64 bytes.
-        gender (int): The gender, represented as an integer. Valid values: 0, 1, 3.
-        phone (Optional[str]): The contact phone number, optional field, validated for format.
-        birth_date (date): The birth date of the user, validated to ensure 16+ years.
-        subscription_lvl (UUID): Current subscription level, default is Free.
-
-    Methods:
+    Validators:
         validate_gender(cls, v): Checks gender is a valid integer value.
         validate_hashed_password(cls, v): Ensures hashed password is 64 bytes.
         validate_birth_date(cls, v): Ensures user is at least 16 years old.

@@ -2,6 +2,8 @@ from pydantic import BaseModel, Field, validator, EmailStr
 
 
 class LoginSchema(BaseModel):
+    """ """
+
     email: EmailStr = Field(
         ..., max_length=255, description="The user's email address."
     )
@@ -30,6 +32,16 @@ class LoginSchema(BaseModel):
         from_attributes = True
 
 
+class EmailIn(BaseModel):
+    """ """
+
+    email: EmailStr = Field(
+        ..., max_length=255, description="The user's email address."
+    )
+
+
 class TokenResponse(BaseModel):
+    """ """
+
     access_token: str
     refresh_token: str

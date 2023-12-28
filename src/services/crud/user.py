@@ -23,3 +23,7 @@ async def create_user(
     )
 
     return user
+
+
+async def get_id_with_email(email: str) -> str:
+    return (await User.get(email=email)).id.hex

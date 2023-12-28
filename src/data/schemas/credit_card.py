@@ -6,14 +6,6 @@ from uuid import UUID as UUIDType
 class CreditCardSchema(BaseModel):
     """
     A schema representing a credit card.
-
-    Attributes:
-        id (UUIDType): The unique identifier for the credit card.
-        holder (str): The name of the cardholder.
-        number (str): The credit card number.
-        expiry_date (datetime): The expiration date of the credit card.
-        ccv (int): The card verification value/code.
-        ctype (str): The type of credit card (e.g., Visa, MasterCard).
     """
 
     id: UUIDType = Field(description="The unique identifier for the credit card.")
@@ -30,4 +22,15 @@ class CreditCardSchema(BaseModel):
     )
 
     class Config:
-        orm_mode = True
+        """
+        Configuration class for UserSchema.
+
+        This configuration is used by Pydantic to perform additional behavior in schema
+        validation and serialization.
+
+        Attributes:
+            from_attributes (bool): Indicates that the model can be constructed from objects
+            with attributes (like ORM models). This replaces the deprecated `orm_mode`.
+        """
+
+        from_attributes = True

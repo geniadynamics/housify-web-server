@@ -12,9 +12,9 @@ async def setup_openapi(app):
             routes=app.routes,
         )
         # Define security scheme for JWT Authorization
-        # openapi_schema["components"]["securitySchemes"] = {
-        #     "bearerAuth": {"type": "http", "scheme": "bearer", "bearerFormat": "JWT"}
-        # }
+        openapi_schema["components"]["securitySchemes"] = {
+            "bearerAuth": {"type": "http", "scheme": "bearer", "bearerFormat": "JWT"}
+        }
         # Apply it to all the paths
         # for path in openapi_schema["paths"].values():
         #     for method in path.values():
@@ -23,6 +23,5 @@ async def setup_openapi(app):
         #         method["security"].append({"bearerAuth": []})
 
         app.openapi_schema = openapi_schema
+        app.openapi = custom_openapi
         return app.openapi_schema
-
-    app.openapi = custom_openapi

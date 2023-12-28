@@ -1,25 +1,12 @@
 from tortoise import fields
 from tortoise.models import Model
-
-from tortoise.contrib.pydantic.creator import pydantic_model_creator
-
-from pydantic import EmailStr, validator, PydanticSchemaGenerationError
-
-
 from .device_login import DeviceLogin
-from .refresh_token import RefreshToken
 from .device import Device
 from .address import Address
 from .subscription import Subscription
 from .billing_info import BillingInfo
-from .subscription_lvl import SubscriptionLvl
 
-from data.models import DeviceLogin, RefreshToken, Device
-
-from datetime import date, datetime
-from typing import Union
-
-import re
+from data.models import DeviceLogin, Device
 
 
 class User(Model):
@@ -38,7 +25,6 @@ class User(Model):
         updated_at (DatetimeField): Timestamp when the user was last updated, set automatically.
         billing_info (ReverseRelation): Reverse relation to BillingInfo.
         subscription (ReverseRelation): Reverse relation to Subscription.
-        refresh_token (ReverseRelation): Reverse relation to RefreshToken.
         device_login (ReverseRelation): Reverse relation to DeviceLogin.
     """
 
@@ -58,40 +44,7 @@ class User(Model):
     subscriptions: fields.ReverseRelation["Subscription"]
     billing_info: fields.ReverseRelation["BillingInfo"]
     devices: fields.ReverseRelation["Device"]
-    refresh_tokens: fields.ReverseRelation["RefreshToken"]
     addresses: fields.ReverseRelation["Address"]
     device_logins: fields.ReverseRelation["DeviceLogin"]
 
     subscription_lvl = fields.CharField(max_length=128, default="Free-Tier")
-
-    
-    # class PydanticMeta:
-    #     @validator("gender")
-    #     def validate_gender(cls, v):
-    #         if v not in [0, 1, 2]:
-    #             raise ValueError("Invalid gender value")
-    #         return v
-    #
-    #     @validator("email")
-    #     def validate_email(cls, v: str) -> EmailStr:
-    #         return EmailStr(v)
-    #
-    #     @validator("hashed_password")
-    #     def validate_hashed_password(cls, v):
-    #         # if len(v) != 64:
-    #         #     raise ValueError("Invalid hashed password length")
-    #         return v
-    #
-    #     @validator("birth_date")
-    #     def validate_birth_date(cls, v):
-    #         if (datetime.now().date() - v).days / 365.25 < 16:
-    #             raise ValueError("User must be at least 16 years old")
-    #         return v
-    #
-    #     @validator("phone")
-    #     def validate_phone(cls, v):
-    #         if v is not None:
-    #             phone_regex = r"^\+?1?\d{9,15}$"
-    #             if not re.fullmatch(phone_regex, v):
-    #                 raise ValueError("Invalid phone number format")
-    #         return v

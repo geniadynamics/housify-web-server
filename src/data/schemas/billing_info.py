@@ -1,5 +1,4 @@
 from pydantic import BaseModel, Field
-from datetime import datetime
 from typing import Optional
 from uuid import UUID as UUIDType
 
@@ -10,13 +9,6 @@ from .address import AddressSchema
 class BillingInfoSchemaIn(BaseModel):
     """
     A schema representing billing information associated with a user.
-
-    Attributes:
-        id (UUIDType): The unique identifier for the billing information.
-        address (UUIDType): The associated address ID.
-        credit_card (UUIDType): The associated credit card ID.
-        user (UUIDType): The user ID to whom this billing information belongs.
-        nif (Optional[str]): The tax identification number (optional).
     """
 
     id: UUIDType = Field(
@@ -32,19 +24,23 @@ class BillingInfoSchemaIn(BaseModel):
     )
 
     class Config:
-        orm_mode = True
+        """
+        Configuration class for UserSchema.
+
+        This configuration is used by Pydantic to perform additional behavior in schema
+        validation and serialization.
+
+        Attributes:
+            from_attributes (bool): Indicates that the model can be constructed from objects
+            with attributes (like ORM models). This replaces the deprecated `orm_mode`.
+        """
+
+        from_attributes = True
 
 
 class BillingInfoSchema(BaseModel):
     """
     A schema representing billing information (complete) associated with a user.
-
-    Attributes:
-        id (UUIDType): The unique identifier for the billing information.
-        nif (Optional[str]): The tax identification number (optional).
-        user (UUIDType): The user ID to whom this billing information belongs.
-        address_info (AddressSchema): The address information.
-        credit_card_info (CreditCardSchema): The credit card information.
     """
 
     id: UUIDType = Field(
@@ -60,23 +56,40 @@ class BillingInfoSchema(BaseModel):
     credit_card_info: CreditCardSchema
 
     class Config:
-        orm_mode = True
+        """
+        Configuration class for UserSchema.
+
+        This configuration is used by Pydantic to perform additional behavior in schema
+        validation and serialization.
+
+        Attributes:
+            from_attributes (bool): Indicates that the model can be constructed from objects
+            with attributes (like ORM models). This replaces the deprecated `orm_mode`.
+        """
+
+        from_attributes = True
 
 
-class BillingInfoSchemaRm(BaseModel):
-    """
-    A schema representing billing information associated with a user (removal).
-
-    Attributes:
-        id (UUIDType): The unique identifier for the billing information.
-        user_id (UUIDType): The unique identifier for user reponsible for the
-            billing information.
-    """
-
-    id: UUIDType = Field(
-        description="The unique identifier for the billing information."
-    )
-    user_id: UUIDType = Field(description="The unique identifier for the user.")
-
-    class Config:
-        orm_mode = True
+# class BillingInfoSchemaRm(BaseModel):
+#     """
+#     A schema representing billing information associated with a user (removal).
+#     """
+#
+#     id: UUIDType = Field(
+#         description="The unique identifier for the billing information."
+#     )
+#     user_id: UUIDType = Field(description="The unique identifier for the user.")
+#
+#     class Config:
+#         """
+#         Configuration class for UserSchema.
+#
+#         This configuration is used by Pydantic to perform additional behavior in schema
+#         validation and serialization.
+#
+#         Attributes:
+#             from_attributes (bool): Indicates that the model can be constructed from objects
+#             with attributes (like ORM models). This replaces the deprecated `orm_mode`.
+#         """
+#
+#         from_attributes = True

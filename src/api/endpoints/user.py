@@ -1,11 +1,14 @@
 from data.schemas.user import UserRegisterSchema, UserSchema
+from data.schemas.login import EmailIn
 from data.models.user import User
-from fastapi import APIRouter, HTTPException, status
+from fastapi.security import HTTPBearer
+from fastapi import APIRouter, Depends, HTTPException, status, Depends
 from services.crud.user import create_user
 from data.models.user import User
-import uuid
+from async_fastapi_jwt_auth import AuthJWT
 
 router = APIRouter()
+ui_auth_rule = HTTPBearer()
 
 
 @router.post(
@@ -20,10 +23,27 @@ async def create_new_user(user_data: UserRegisterSchema):
     return user
 
 
-# ADD auth requirements
-@router.get("/users/{user_id}", response_model=UserSchema)
-async def get_user(user_id: uuid.UUID):
-    user = await User.get(id=user_id)
+@router.post(
+    "/user/me", response_model=UserSchema, dependencies=[Depends(ui_auth_rule)]
+)
+async def get_user(data: EmailIn, Authorize: AuthJWT = Depends()):
+    await Authorize.jwt_required()
+
+    user = await User.get(email=data.email)
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
+
+
+@router.post(
+    "/user/me/subscription",
+    response_model=UserSchema,
+    dependencies=[Depends(ui_auth_rule)],
+)
+async def get_user_subscription_lvl(data: EmailIn, Authorize: AuthJWT = Depends()):
+    await Authorize.jwt_required()
+
+    user = await User.get(email=data.email)
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
     return user
