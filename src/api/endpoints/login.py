@@ -31,8 +31,6 @@ async def login(user: LoginSchema, Authorize: AuthJWT = Depends()):
 
     Args:
         user (LoginSchema): A pydantic schema representing the user's login details.
-        Authorize (AuthJWT, optional): Dependency injection for JWT authorization.
-                                       Defaults to Depends().
 
     Returns:
         dict: A dictionary containing the 'access_token' and 'refresh_token'.
@@ -78,11 +76,6 @@ async def refresh(
 
     This endpoint creates a new access token for a user with a valid refresh token.
 
-    Args:
-        Authorize (AuthJWT): Dependency injection for JWT authorization.
-        redis_client (callable, optional): Dependency for Redis client.
-                                           Defaults to Depends(get_redis_client).
-
     Returns:
         dict: A dictionary containing the new 'access_token'.
 
@@ -104,6 +97,18 @@ async def refresh(
 async def access_revoke(
     Authorize: AuthJWT = Depends(), redis_client=Depends(get_redis_client)
 ):
+    """
+    Revoke an access token.
+
+    This endpoint revokes the current user's access token, adding it to a denylist in Redis.
+
+    Returns:
+        dict: A dictionary with a message indicating that the access token has been revoked.
+
+    Raises:
+        HTTPException: If the access token is invalid, with a 401 status code.
+    """
+
     await Authorize.jwt_required()
     raw_jwt = await Authorize.get_raw_jwt()
     if raw_jwt is None:
@@ -118,6 +123,17 @@ async def access_revoke(
 async def refresh_revoke(
     Authorize: AuthJWT = Depends(), redis_client=Depends(get_redis_client)
 ):
+    """
+    Revoke a refresh token.
+
+    This endpoint revokes the current user's refresh token, adding it to a denylist in Redis.
+
+    Returns:
+        dict: A dictionary with a message indicating that the refresh token has been revoked.
+
+    Raises:
+        HTTPException: If the refresh token is invalid, with a 401 status code.
+    """
     await Authorize.jwt_refresh_token_required()
 
     raw_jwt = await Authorize.get_raw_jwt()
@@ -133,6 +149,18 @@ async def refresh_revoke(
 async def protected(
     Authorize: AuthJWT = Depends(), redis_client=Depends(get_redis_client)
 ):
+    """
+    Access a protected resource.
+
+    This endpoint returns data about the current user if they have a valid access token.
+
+    Returns:
+        dict: A dictionary containing the current user's information.
+
+    Raises:
+        HTTPException: If the access token is invalid, with a 401 status code.
+    """
+
     await validate_access_token(Authorize, redis_client)
 
     current_user = await Authorize.get_jwt_subject()
