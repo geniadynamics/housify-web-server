@@ -83,7 +83,9 @@ async def refresh(
         HTTPException: If the refresh token is invalid, with a 401 status code.
     """
 
-    await validate_refresh_token(Authorize, redis_client)
+    await validate_refresh_token(
+        Authorize, redis_client, validate_sub_with_internal_id=False
+    )
 
     current_user = await Authorize.get_jwt_subject()
     if not current_user:
@@ -161,7 +163,9 @@ async def protected(
         HTTPException: If the access token is invalid, with a 401 status code.
     """
 
-    await validate_access_token(Authorize, redis_client)
+    await validate_access_token(
+        Authorize, redis_client, validate_sub_with_internal_id=False
+    )
 
     current_user = await Authorize.get_jwt_subject()
     return {"user": current_user}
