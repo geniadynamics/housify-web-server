@@ -7,14 +7,13 @@ from pydantic import EmailStr, validator, PydanticSchemaGenerationError
 
 
 from .device_login import DeviceLogin
-from .refresh_token import RefreshToken
 from .device import Device
 from .address import Address
 from .subscription import Subscription
 from .billing_info import BillingInfo
 from .subscription_lvl import SubscriptionLvl
 
-from data.models import DeviceLogin, RefreshToken, Device
+from data.models import DeviceLogin, Device
 
 from datetime import date, datetime
 from typing import Union
@@ -58,13 +57,11 @@ class User(Model):
     subscriptions: fields.ReverseRelation["Subscription"]
     billing_info: fields.ReverseRelation["BillingInfo"]
     devices: fields.ReverseRelation["Device"]
-    refresh_tokens: fields.ReverseRelation["RefreshToken"]
     addresses: fields.ReverseRelation["Address"]
     device_logins: fields.ReverseRelation["DeviceLogin"]
 
     subscription_lvl = fields.CharField(max_length=128, default="Free-Tier")
 
-    
     # class PydanticMeta:
     #     @validator("gender")
     #     def validate_gender(cls, v):

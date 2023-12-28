@@ -12,8 +12,3 @@ async def setup_router(app):
     async def read_root() -> dict:
         return {"message": "Welcome to Housify API"}
 
-    @app.exception_handler(AuthJWTException)
-    def authjwt_exception_handler(request: Request, exc: AuthJWTException):
-        return JSONResponse(
-            status_code=exc.status_code, content={"detail": exc.message}
-        )

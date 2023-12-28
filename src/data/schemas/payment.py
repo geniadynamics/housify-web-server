@@ -6,12 +6,6 @@ from uuid import UUID as UUIDType
 class PaymentSchema(BaseModel):
     """
     A schema representing a payment record.
-
-    Attributes:
-        id (UUIDType): The unique identifier for the payment.
-        billing_info (UUIDType): The associated billing info ID.
-        status (dict): The JSON status object of the payment.
-        processed_at (datetime): Timestamp when the payment was processed.
     """
 
     id: UUIDType = Field(description="The unique identifier for the payment.")

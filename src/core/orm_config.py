@@ -23,7 +23,6 @@ def config_db():
                     "data.models.invoice",
                     "data.models.subscription",
                     "data.models.subscription_lvl",
-                    "data.models.refresh_token",
                     "data.models.credit_card",
                     "data.models.billing_info",
                 ],
