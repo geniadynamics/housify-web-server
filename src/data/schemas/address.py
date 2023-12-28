@@ -18,4 +18,15 @@ class AddressSchema(BaseModel):
     )
 
     class Config:
-        orm_mode = True
+        """
+        Configuration class for UserSchema.
+
+        This configuration is used by Pydantic to perform additional behavior in schema
+        validation and serialization.
+
+        Attributes:
+            from_attributes (bool): Indicates that the model can be constructed from objects
+            with attributes (like ORM models). This replaces the deprecated `orm_mode`.
+        """
+
+        from_attributes = True
