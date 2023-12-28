@@ -6,14 +6,6 @@ from uuid import UUID as UUIDType
 class CreditCardSchema(BaseModel):
     """
     A schema representing a credit card.
-
-    Attributes:
-        id (UUIDType): The unique identifier for the credit card.
-        holder (str): The name of the cardholder.
-        number (str): The credit card number.
-        expiry_date (datetime): The expiration date of the credit card.
-        ccv (int): The card verification value/code.
-        ctype (str): The type of credit card (e.g., Visa, MasterCard).
     """
 
     id: UUIDType = Field(description="The unique identifier for the credit card.")
