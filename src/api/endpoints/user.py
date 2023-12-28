@@ -1,5 +1,5 @@
 from data.schemas.user import UserRegisterSchema, UserSchema
-from data.schemas.login import LoginSchemaWithToken
+from data.schemas.login import EmailIn
 from data.models.user import User
 from fastapi.security import HTTPBearer
 from fastapi import APIRouter, Depends, HTTPException, status, Depends
@@ -26,7 +26,21 @@ async def create_new_user(user_data: UserRegisterSchema):
 @router.post(
     "/user/me", response_model=UserSchema, dependencies=[Depends(ui_auth_rule)]
 )
-async def get_user(data: LoginSchemaWithToken, Authorize: AuthJWT = Depends()):
+async def get_user(data: EmailIn, Authorize: AuthJWT = Depends()):
+    await Authorize.jwt_required()
+
+    user = await User.get(email=data.email)
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
+
+
+@router.post(
+    "/user/me/subscription",
+    response_model=UserSchema,
+    dependencies=[Depends(ui_auth_rule)],
+)
+async def get_user_subscription_lvl(data: EmailIn, Authorize: AuthJWT = Depends()):
     await Authorize.jwt_required()
 
     user = await User.get(email=data.email)

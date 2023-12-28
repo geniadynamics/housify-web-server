@@ -2,6 +2,7 @@ from async_fastapi_jwt_auth import AuthJWT
 from datetime import timedelta
 import os
 from fastapi import HTTPException
+from services.crud.user import get_id_with_email
 
 ALGORITHM = "ES512"
 key_path = os.getenv("ECDSA_KEY_PATH")
@@ -57,7 +58,8 @@ async def is_token_in_denylist(jti, redis_client):
     return redis_client.sismember("denylist", jti)
 
 
-async def validate_access_token(Authorize, redis_client):
+async def validate_access_token(Authorize, redis_client, email: str | None =
+                                 None, validate_sub_with_internal_id=True):
     """
     Validate an access token and check if it's in the denylist.
 
@@ -78,8 +80,15 @@ async def validate_access_token(Authorize, redis_client):
     if await is_token_in_denylist(jti, redis_client):
         raise HTTPException(status_code=401, detail="Token has been revoked")
 
+    if validate_sub_with_internal_id:
+        if not email:
+            raise ValueError("Email has to be provided")
+        if (await Authorize.get_jwt_subject()) != await get_id_with_email(email):
+            raise HTTPException(status_code=401, detail="Invalid Token")
 
-async def validate_refresh_token(Authorize, redis_client):
+
+async def validate_refresh_token(Authorize, redis_client, email: str | None =
+                                 None, validate_sub_with_internal_id=True):
     """
     Validate a refresh token and check if it's in the denylist.
 
@@ -99,3 +108,9 @@ async def validate_refresh_token(Authorize, redis_client):
     jti = raw_jwt["jti"]
     if await is_token_in_denylist(jti, redis_client):
         raise HTTPException(status_code=401, detail="Token has been revoked")
+
+    if validate_sub_with_internal_id:
+        if not email:
+            raise ValueError("Email has to be provided")
+        if (await Authorize.get_jwt_subject()) != await get_id_with_email(email):
+            raise HTTPException(status_code=401, detail="Invalid Token")
