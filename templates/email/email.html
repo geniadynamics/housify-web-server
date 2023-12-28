@@ -1,19 +1,247 @@
-<html>
-<body style="margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, Helvetica, sans-serif;">
-<div style="width: 100%; background: #efefef; border-radius: 10px; padding: 10px;">
-  <div style="margin: 0 auto; width: 90%; text-align: center;">
-    <h1 style="background-color: rgba(0, 53, 102, 1); padding: 5px 10px; border-radius: 5px; color: white;">{{ title }}</h1>
-    <div style="margin: 30px auto; background: white; width: 40%; border-radius: 10px; padding: 50px; text-align: center;">
-      <h3 style="margin-bottom: 100px; font-size: 24px;">{{ name }}!</h3>
-      <p style="margin-bottom: 30px;">Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi, doloremque.</p>
-      <a style="display: block; margin: 0 auto; border: none; background-color: rgba(255, 214, 10, 1); color: white; width: 200px; line-height: 24px; padding: 10px; font-size: 24px; border-radius: 10px; cursor: pointer; text-decoration: none;"
-        href="https://fastapi.tiangolo.com/"
-        target="_blank"
-      >
-        Let's Go
-      </a>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Meta tags for character set and viewport settings -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Title dynamically set with template variable -->
+  <title>{{ title }}</title>
+  <!-- Styling for the page -->
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Arial', sans-serif;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .container {
+      position: relative;
+      width: 100%;
+      max-width: 800px;
+      margin: 50px auto;
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    header {
+      background-color: #003366;
+      color: white;
+      text-align: center;
+      padding: 30px 0;
+      border-radius: 10px 10px 0 0;
+    }
+
+    header h1 {
+      font-size: 32px;
+      margin-bottom: 20px;
+    }
+
+    .hero-image-light,
+    .hero-image-dark {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+    }
+
+    .content {
+      padding: 30px;
+      text-align: center;
+    }
+
+    h2 {
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: #003366;
+    }
+
+    p {
+      font-size: 16px;
+      color: #ffffff;
+      margin-bottom: 30px;
+    }
+
+    .cta-button {
+      display: inline-block;
+      background-color: #ffc107;
+      color: white;
+      padding: 15px 30px;
+      font-size: 18px;
+      border-radius: 5px;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+    }
+
+    .cta-button:hover {
+      background-color: #ff9800;
+    }
+
+    .features {
+      background: #f7f7f7;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .feature {
+      margin-bottom: 40px;
+    }
+
+    .feature h3 {
+      font-size: 24px;
+      margin-bottom: 10px;
+      color: #003366;
+    }
+
+    .feature p {
+      font-size: 16px;
+      color: #ffffff;
+    }
+
+    @media (prefers-color-scheme: light) {
+      body {
+        background-color: #f7f7f7;
+        color: #333;
+      }
+
+      .container {
+        background: #ffffff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      header {
+        background-color: #003366;
+        color: white;
+      }
+
+      .cta-button {
+        background-color: #ffc107;
+      }
+
+      .cta-button:hover {
+        background-color: #ff9800;
+      }
+
+      .features {
+        background: #f7f7f7;
+      }
+
+      .feature h3,
+      h2,
+      p {
+        color: #000;
+      }
+
+      .hero-image-light {
+        display: block;
+      }
+
+      .hero-image-dark {
+        display: none;
+      }
+
+      .feature p {
+        color: #333;
+      }
+
+      .bottom-logo {
+        content: url('https://housify.geniadynamics.org/static/logo_company.png');
+      }
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: #1a1a1a;
+        color: #fff;
+      }
+
+      .container {
+        background: #2d2d2d;
+        box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+      }
+
+      header {
+        background-color: #001f33;
+      }
+
+      .cta-button {
+        background-color: #ff8c00;
+      }
+
+      .cta-button:hover {
+        background-color: #ff4500;
+      }
+
+      .features {
+        background: #2d2d2d;
+      }
+
+      .feature h3,
+      h2 {
+        color: #2196F3;
+      }
+
+      .hero-image-light {
+        display: none;
+      }
+
+      .hero-image-dark {
+        display: block;
+      }
+
+      .feature p {
+        color: #ffffff;
+      }
+
+      .bottom-logo {
+        content: url('https://housify.geniadynamics.org/static/logo_company_white.png');
+      }
+    }
+
+    .bottom-logo {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      margin: 10px;
+      max-width: 100px;
+      max-height: 100px;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Main content container -->
+  <div class="container">
+    <!-- Page header -->
+    <header>
+      <h1>{{ title }}</h1>
+    </header>
+    <!-- Hero images, displayed based on color scheme -->
+    <img class="hero-image-dark" src="https://housify.geniadynamics.org/static/logo_project_white.png" alt="Hero Image - Dark">
+    <img class="hero-image-light" src="https://housify.geniadynamics.org/static/logo_project.png" alt="Hero Image - Light">
+    <!-- Content section with dynamic greeting and call-to-action button -->
+    <div class="content">
+      <h2>Hello, {{ name }}!</h2>
+      <p>We're thrilled to welcome you to our platform. Get ready for an amazing experience!</p>
+      <a class="cta-button" href="https://github.com/geniadynamics" target="_blank">Let's Go</a>
     </div>
+    <!-- Features section with two features and descriptions -->
+    <div class="features">
+      <div class="feature">
+        <h3>Feature 1</h3>
+        <p>Explore innovative solutions and enhance your workflow with our powerful features.</p>
+      </div>
+      <div class="feature">
+        <h3>Feature 2</h3>
+        <p>Maximize your productivity and streamline processes with our user-friendly tools.</p>
+      </div>
+    </div>
+    <!-- Bottom logo displayed based on color scheme -->
+    <img class="bottom-logo" src="https://housify.geniadynamics.org/static/logo_company.png" alt="Bottom Logo">
   </div>
-</div>
 </body>
+
 </html>
