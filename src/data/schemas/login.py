@@ -32,7 +32,7 @@ class LoginSchema(BaseModel):
         from_attributes = True
 
 
-class LoginSchemaWithToken(BaseModel):
+class EmailIn(BaseModel):
     """ """
 
     email: EmailStr = Field(
