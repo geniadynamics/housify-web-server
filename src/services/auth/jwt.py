@@ -2,6 +2,9 @@ from async_fastapi_jwt_auth import AuthJWT
 from datetime import timedelta
 import os
 
+from async_fastapi_jwt_auth.exceptions import AuthJWTException
+from fastapi import HTTPException
+
 ALGORITHM = "ES512"
 
 key_path = os.getenv("ECDSA_KEY_PATH")
@@ -24,16 +27,41 @@ async def setup():
         "authjwt_algorithm": "ES512",
         "authjwt_public_key": public_key,
         "authjwt_private_key": private_key,
-        "authjwt_denylist_token_checks": {"access", "refresh"},
-        "access_expires": timedelta(minutes=1),
-        "refresh_expires": timedelta(days=7),
+        "authjwt_access_token_expires": timedelta(minutes=5),
+        "authjwt_refresh_token_expires": timedelta(days=7),
     }
-
-    required_keys = ["authjwt_algorithm", "authjwt_public_key", "authjwt_private_key"]
 
     @AuthJWT.load_config
     def get_config():
-        missing_keys = [key for key in required_keys if key not in config]
-        if missing_keys:
-            raise ValueError(f"Missing configuration keys: {missing_keys}")
         return [(key, value) for key, value in config.items()]
+
+
+async def is_token_in_denylist(jti, redis_client):
+    """Check if the token's JTI is in the Redis denylist."""
+    return redis_client.sismember("denylist", jti)
+
+
+async def validate_access_token(Authorize, redis_client):
+    """An exeption is trown when the token is invalid or in deny list"""
+    await Authorize.jwt_required()
+
+    raw_jwt = await Authorize.get_raw_jwt()
+    if raw_jwt is None:
+        raise HTTPException(status_code=401, detail="Invalid token")
+
+    jti = raw_jwt["jti"]
+    if await is_token_in_denylist(jti, redis_client):
+        raise HTTPException(status_code=401, detail="Token has been revoked")
+
+
+async def validate_refresh_token(Authorize, redis_client):
+    """An exeption is trown when the token is invalid or in deny list"""
+    await Authorize.jwt_required()
+
+    raw_jwt = await Authorize.get_raw_jwt()
+    if raw_jwt is None:
+        raise HTTPException(status_code=401, detail="Invalid token")
+
+    jti = raw_jwt["jti"]
+    if await is_token_in_denylist(jti, redis_client):
+        raise HTTPException(status_code=401, detail="Token has been revoked")
