@@ -34,11 +34,8 @@ async def get_user(data: EmailIn, Authorize: AuthJWT = Depends()):
         raise HTTPException(status_code=404, detail="User not found")
     return user
 
-
 @router.post(
-    "/user/me/subscription",
-    response_model=UserSchema,
-    dependencies=[Depends(ui_auth_rule)],
+    "/user/me/subscription", response_model=UserSchema, dependencies=[Depends(ui_auth_rule)]
 )
 async def get_user_subscription_lvl(data: EmailIn, Authorize: AuthJWT = Depends()):
     await Authorize.jwt_required()

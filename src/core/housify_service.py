@@ -11,7 +11,7 @@ from core.redis_client import get_redis_client
 from core.load_env import load_env
 from core.mail_service import setup_email_connection
 from services.utils.cutom_openapi import setup_openapi
-
+  
 from zeep import Client
 from async_fastapi_jwt_auth.exceptions import AuthJWTException
 from fastapi.responses import JSONResponse
