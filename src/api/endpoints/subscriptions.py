@@ -12,7 +12,7 @@ async def get_subscription_levels():
     return await SubscriptionLvl.all()
 
 
-@router.get("/subscribe", response_model=list[SubscriptionLvlSchema])
+@router.get("/user/subscribe", response_model=list[SubscriptionLvlSchema])
 async def subscribe(subscription_description: str, user_data: EmailIn):
     # await validate_access_token()
     return await SubscriptionLvl.all()
