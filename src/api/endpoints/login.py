@@ -25,19 +25,24 @@ async def login(user: LoginSchema, Authorize: AuthJWT = Depends()):
     """
     Authenticate a user and provide access and refresh tokens.
 
-    This endpoint authenticates a user based on their email and password.
-    If authentication is successful, it sends an email notification and
-    returns an access token and a refresh token.
+    This endpoint is designed for user authentication. It accepts user login credentials, 
+    verifies them, and, upon successful authentication, issues JWT (JSON Web Token) 
+    access and refresh tokens. An email notification is sent to the user as a part of this process.
 
-    Args:
-        user (LoginSchema): A pydantic schema representing the user's login details.
+    Parameters:
+    - user (LoginSchema): A pydantic schema object that contains the user's email and password.
 
     Returns:
-        dict: A dictionary containing the 'access_token' and 'refresh_token'.
+    - dict: A dictionary containing 'access_token' and 'refresh_token'. The 'access_token' is used 
+      for user session authentication, while the 'refresh_token' is used to generate new access tokens.
 
-    Raises:
-        HTTPException: If authentication fails with a 401 status code,
-                       indicating a bad email or password.
+    Exceptions:
+    - HTTPException: Raises a 401 status code exception if authentication fails. This could be due to 
+      incorrect email or password.
+
+    Note:
+    - The AuthJWT dependency is used for creating and managing JWT tokens.
+    - Ensure that the credentials provided in the LoginSchema are validated before processing.
     """
 
     try:
