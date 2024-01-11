@@ -5,6 +5,7 @@ from .device import Device
 from .address import Address
 from .subscription import Subscription
 from .billing_info import BillingInfo
+from .request import Request
 
 from data.models import DeviceLogin, Device
 
@@ -46,5 +47,6 @@ class User(Model):
     devices: fields.ReverseRelation["Device"]
     addresses: fields.ReverseRelation["Address"]
     device_logins: fields.ReverseRelation["DeviceLogin"]
+    requests: fields.ReverseRelation["Request"]
 
     subscription_lvl = fields.CharField(max_length=128, default="Free-Tier")
