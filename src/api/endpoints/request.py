@@ -42,24 +42,6 @@ async def process_inference_request(data: RequestSchemaIn):
         return response
 
 
-router = APIRouter()
-
-
-@router.post("/upload-image")
-async def upload_image(file: UploadFile = File(...)):
-    try:
-        image_directory = Path("/var/web/housify/media/in")
-
-        file_path = image_directory / file.filename
-
-        with file_path.open("wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-    return JSONResponse(status_code=200, content={"filename": file.filename})
-
-
 async def create_request(data: RequestSchemaOut, user_uuid: UUID4):
     user = await User.get_or_none(id=user_uuid)
     if user is None:
@@ -91,3 +73,18 @@ async def get_user_requests(email: str):
     requests = await Request.filter(user=user).all()
 
     return [RequestSchemaOut.from_orm(request) for request in requests]
+
+
+@router.post("/upload-image")
+async def upload_image(file: UploadFile = File(...)):
+    try:
+        image_directory = Path("/var/web/housify/media/in")
+
+        file_path = image_directory / file.filename
+
+        with file_path.open("wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    return JSONResponse(status_code=200, content={"filename": file.filename})
