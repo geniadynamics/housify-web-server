@@ -1,5 +1,5 @@
 from asyncio import timeout
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from data.models.user import User
 from fastapi.security import HTTPBearer
 from fastapi import APIRouter, Depends, HTTPException, Depends
@@ -10,6 +10,10 @@ from data.models.request import Request
 from pydantic import UUID4
 from typing import List
 from uuid import uuid4
+from fastapi.responses import JSONResponse
+import shutil
+from pathlib import Path
+
 import httpx
 
 router = APIRouter()
@@ -36,6 +40,24 @@ async def process_inference_request(data: RequestSchemaIn):
         response = RequestSchemaOut(**external_data)
         await create_request(response, user.id)
         return response
+
+
+router = APIRouter()
+
+
+@router.post("/upload-image")
+async def upload_image(file: UploadFile = File(...)):
+    try:
+        image_directory = Path("/var/web/housify/media/in")
+
+        file_path = image_directory / file.filename
+
+        with file_path.open("wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    return JSONResponse(status_code=200, content={"filename": file.filename})
 
 
 async def create_request(data: RequestSchemaOut, user_uuid: UUID4):
